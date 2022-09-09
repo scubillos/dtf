@@ -1,0 +1,19 @@
+html, body {
+    background-color: #F0F0F0;
+    height: 100%;
+}
+
+.container {
+    background-color: #FFFFFF;
+    min-height: 90% !important;
+    height: 90% !important;
+    width:80%;
+    border:1px solid #ccc;
+    overflow-x: none;
+    overflow-y: auto;
+    border-radius: 0 0 30px 30px;
+}
+
+.container > .row {
+    margin-top: 20px;
+}
