@@ -6,7 +6,7 @@ var request_form = new Vue({
                 url: "",
             },
             crm: {
-                url: "https://b24-gg0vby.bitrix24.es/rest/1/bdjck2qfho6x61cr/",
+                url: "https://b24-gg0vby.bitrix24.es/rest/1/zvixuqixiuq7kbhl/",
             },
             erp: {
                 url: "https://api.alegra.com/api/",
