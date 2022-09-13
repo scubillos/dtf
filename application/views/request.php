@@ -53,9 +53,17 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-md-4">Producto</label>
+                                    <label class="col-md-4">Producto Anterior</label>
                                     <div class="input-group col-md-8">
-                                        <select2 :options="productos" class="form-control" v-model="request.id_producto">
+                                        <select2 :options="productos" class="form-control" v-model="request.id_producto_ant">
+                                            <option disabled value="0">Seleccione</option>
+                                        </select2>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-4">Producto Nuevo</label>
+                                    <div class="input-group col-md-8">
+                                        <select2 :options="productos" class="form-control" v-model="request.id_producto_nuevo">
                                             <option disabled value="0">Seleccione</option>
                                         </select2>
                                     </div>
