@@ -3,7 +3,12 @@ var request_form = new Vue({
     data: {
         api: {
             bonita: {
-                url: "",
+                url: "http://localhost:8080/bonita/",
+                credentials: {
+                    username: 'graphic.interface',
+                    password: 'bpm'
+                },
+                token: null,
             },
             crm: {
                 url: "https://b24-gg0vby.bitrix24.es/rest/1/zvixuqixiuq7kbhl/",
@@ -27,7 +32,8 @@ var request_form = new Vue({
             { id: "CE", text: "Cédula de extrangería (CE)" },
             { id: "TI", text: "Tarjeta de identidad (TI)" },
         ],
-        productos: []    
+        productos: [],
+        productosNuevo: []
     },
     created: function() {
         this.getProductos();
@@ -48,13 +54,13 @@ var request_form = new Vue({
                     const producto = productos[i];
                     self.productos.push({ id: producto.id, text: producto.name });
                 }
-            })
+            });
         },
         async registerRequest() {
             if (await this.validateEmail()) {
-                alert("Ejecutar llamado API Bonita");
+                await this.bonitaCall();
             } else {
-                toastr.error("La dirección de correo no corresponde a ningún cliente de DTF")
+                toastr.error("La dirección de correo no corresponde a ningún cliente de DTF");
             }
         },
         async validateEmail() {
@@ -72,52 +78,85 @@ var request_form = new Vue({
             });
 
             return valid;
+        },
+        async bonitaCall() {
+            let self = this;
+            try {
+                await this.bonitaLogin();
+                this.bonitaGetProcess();
+                this.bonitaStartProcess();
+                this.bonitaHumanTask();
+                this.bonitaAssignedActor();
+                this.bonitaExecuteProcess();
+                toastr.success("Solicitud registrada correctamente");
+            } catch (error) {
+                toastr.error(error);
+            }
+        },
+        async bonitaLogin() {
+            let self = this;
+            await fetch(self.api.bonita.url + 'loginservice', {
+                method: 'POST',
+                cache: 'no-cache',
+                headers: {
+                    'Accept': 'application/json',
+                    'Authorization': 'Basic ' + self.api.erp.token,
+                },
+                body: {
+
+                }
+            }).then(async (response) => {
+                if (response.code == 204) {
+                    self.bonita.token = await response.cookies.get('X-Bonita-API-Token');
+                } else {
+                    throw Error("Error en el Login de Bonita");
+                }
+            }).catch(error => {
+                throw Error("Error en el Login de Bonita");
+            });
+        },
+        bonitaGetProcess() {
+
+        },
+        bonitaStartProcess() {
+
+        },
+        bonitaHumanTask() {
+
+        },
+        bonitaAssignedActor() {
+
+        },
+        bonitaExecuteProcess() {
+
         }
+    },
+    watch: {
+      'request.id_producto_ant'(val) {
+        let self = this;
+        if (val !== undefined && val !== null && val !== "") {
+          self.productosNuevo = self.productos.filter(producto => {
+            return parseInt(producto.id) !== parseInt(val);
+          });
+        } else {
+          self.productosNuevo = self.productos;
+        }
+      }
     }
  });
 
-
- // Componente select2
 Vue.component('select2', {
-  props: ['options', 'value'],
-  template: '#select2-template',
-  mounted: function () {
-    var vm = this
-    $(this.$el)
-      // init select2
-      .select2({ data: this.options })
-      .val(this.value)
-      .trigger('change')
-      // emit event on change.
-      .on('change', function () {
-        vm.$emit('input', this.value)
-      })
-  },
-  watch: {
-    value: function (value) {
-      // update value
-      $(this.$el)
-      	.val(value)
-      	.trigger('change')
-    },
-    options: function (options) {
-      // update options
-      $(this.$el).empty().select2({ data: options })
-    }
-  },
-  destroyed: function () {
-    $(this.$el).off().select2('destroy')
-  }
-})
-
-Vue.component('select2', {
-    props: ['options', 'value'],
+    props: ['options', 'value', 'placeholder'],
     template: '#select2-template',
     mounted: function () {
       var vm = this
       $(this.$el)
         // init select2
-        .select2({ data: this.options })
+        .select2({ 
+          allowClear: true,
+          data: this.options,
+          placeholder: this.placeholder ?? "Seleccione"
+        })
         .val(this.value)
         .trigger('change')
         // emit event on change.

@@ -41,9 +41,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-4">Tipo documento</label>
                                     <div class="input-group col-md-8">
-                                    <select2 :options="documentos" class="form-control" v-model="request.tipo_documento">
-                                            <option disabled value="0">Seleccione</option>
-                                        </select2>
+                                        <select2 :options="documentos" class="form-control" v-model="request.tipo_documento" />
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -55,17 +53,13 @@
                                 <div class="form-group row">
                                     <label class="col-md-4">Producto Anterior</label>
                                     <div class="input-group col-md-8">
-                                        <select2 :options="productos" class="form-control" v-model="request.id_producto_ant">
-                                            <option disabled value="0">Seleccione</option>
-                                        </select2>
+                                        <select2 :options="productos" class="form-control" v-model="request.id_producto_ant" />
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-4">Producto Nuevo</label>
                                     <div class="input-group col-md-8">
-                                        <select2 :options="productos" class="form-control" v-model="request.id_producto_nuevo">
-                                            <option disabled value="0">Seleccione</option>
-                                        </select2>
+                                        <select2 :options="productos" class="form-control" v-model="request.id_producto_nuevo" id="producto_nuevo" />
                                     </div>
                                 </div>
                                 <div class="form-group row">
