@@ -95,16 +95,38 @@ var request_form = new Vue({
         },
         async bonitaLogin() {
             let self = this;
+            let logininfo = [];
+            logininfo.push('username='+self.api.bonita.credentials.username);
+            logininfo.push('password='+self.api.bonita.credentials.password);
             await fetch(self.api.bonita.url + 'loginservice', {
                 method: 'POST',
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Accept': '*/*',
+                    'Accept-Encoding': 'gzip, deflate, br'
+                },
+                body: logininfo.join("&"),
+            }).then(async (response) => {
+                if (response.code == 204) {
+                    self.bonita.token = await response.cookies.get('X-Bonita-API-Token');
+                    console.log("Token "+self.bonita.token);
+                } else {
+                    throw Error("Error en el Login de Bonita1");
+                }
+            }).catch(error => {
+                throw Error("Error en el Login de Bonita2");
+            });
+        },
+        async bonitaGetProcess() {
+            let self = this;
+            await fetch(self.api.bonita.url + 'process?s=Customer', {
+                method: 'GET',
                 cache: 'no-cache',
                 headers: {
                     'Accept': 'application/json',
                     'Authorization': 'Basic ' + self.api.erp.token,
                 },
-                body: {
-
-                }
             }).then(async (response) => {
                 if (response.code == 204) {
                     self.bonita.token = await response.cookies.get('X-Bonita-API-Token');
@@ -114,9 +136,6 @@ var request_form = new Vue({
             }).catch(error => {
                 throw Error("Error en el Login de Bonita");
             });
-        },
-        bonitaGetProcess() {
-
         },
         bonitaStartProcess() {
 
