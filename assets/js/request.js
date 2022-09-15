@@ -12,6 +12,8 @@ var request_form = new Vue({
                 token: null,
                 cookie: null,
                 idProcess: null,
+                idCase: null,
+                humanTast: null,
             },
             crm: {
                 url: "https://b24-gg0vby.bitrix24.es/rest/1/zvixuqixiuq7kbhl/",
@@ -86,11 +88,11 @@ var request_form = new Vue({
             let self = this;
             try {
                 await this.bonitaLogin();
-                this.bonitaGetProcess();
-                this.bonitaStartProcess();
-                this.bonitaHumanTask();
-                this.bonitaAssignedActor();
-                this.bonitaExecuteProcess();
+                await this.bonitaGetProcess();
+                await this.bonitaStartProcess();
+                await this.bonitaHumanTask();
+                await this.bonitaAssignedActor();
+                await this.bonitaExecuteProcess();
                 toastr.success("Solicitud registrada correctamente");
             } catch (error) {
                 toastr.error(error);
@@ -121,11 +123,11 @@ var request_form = new Vue({
                     console.log("Token "+self.api.bonita.token);
                     console.log("Cookie "+self.api.bonita.cookie);
                 } else {
-                    throw Error("Error en el Login de Bonita1");
+                    throw Error("Respuesta incorrecta en el Login de Bonita");
                 }
             }).catch(error => {
                 console.error(error);
-                throw Error("Error en el Login de Bonita2");
+                throw Error("Error en el Login de Bonita");
             });
         },
         async bonitaGetProcess() {
@@ -148,23 +150,46 @@ var request_form = new Vue({
                     self.api.bonita.idProcess = res.data.id;
                     console.log("idProcess "+self.api.bonita.idProcess);
                 } else {
-                    throw Error("Error en el getProcess de Bonita1");
+                    throw Error("Respuesta incorrecta en getProcess de Bonita");
                 }
             }).catch(error => {
                 console.error(error);
-                throw Error("Error en el getProcess de Bonita2");
+                throw Error("Error en el getProcess de Bonita");
             });
         },
-        bonitaStartProcess() {
+        async bonitaStartProcess() {
+            let self = this;
+            await fetch('/Bonita/StartProcess/'+self.api.bonita.idProcess, {
+                method: 'POST',
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    token: self.api.bonita.token,
+                    cookie: self.api.bonita.cookie,
+                    host: self.api.bonita.url
+                }),
+            }).then(async (response) => {
+                if (response.status == 200) {
+                    let res = await response.json();
+                    self.api.bonita.idCase = res.data.caseId;
+                    console.log("idCase "+self.api.bonita.idCase);
+                } else {
+                    throw Error("Respuesta incorrecta en startProcess de Bonita");
+                }
+            }).catch(error => {
+                console.error(error);
+                throw Error("Error en el startProcess de Bonita");
+            });
+        },
+        async bonitaHumanTask() {
 
         },
-        bonitaHumanTask() {
+        async bonitaAssignedActor() {
 
         },
-        bonitaAssignedActor() {
-
-        },
-        bonitaExecuteProcess() {
+        async bonitaExecuteProcess() {
 
         }
     },
