@@ -90,6 +90,7 @@
         <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
         <script src="<?php echo base_url('assets/js/vue.min.js') ?>"></script>
         <script src="<?php echo base_url('assets/js/vue-resource.min.js') ?>"></script>
+        <script src="https://unpkg.com/vue-cookies@1.8.1/vue-cookies.js"></script>
         <script src="<?php echo base_url('assets/js/select2.min.js') ?>"></script>
         <script src="<?php echo base_url('assets/js/request.js') ?>"></script>
 

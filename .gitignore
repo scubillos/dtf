@@ -5,7 +5,7 @@ application/cache/*
 
 application/logs/*
 !application/logs/index.html
-application/tmp_session/*
+*application/tmp_session/*
 
 !application/*/.htaccess
 

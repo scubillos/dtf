@@ -8,7 +8,10 @@ var request_form = new Vue({
                     username: 'graphic.interface',
                     password: 'bpm'
                 },
+                process: 'Customer',
                 token: null,
+                cookie: null,
+                idProcess: null,
             },
             crm: {
                 url: "https://b24-gg0vby.bitrix24.es/rest/1/zvixuqixiuq7kbhl/",
@@ -98,43 +101,58 @@ var request_form = new Vue({
             let logininfo = [];
             logininfo.push('username='+self.api.bonita.credentials.username);
             logininfo.push('password='+self.api.bonita.credentials.password);
-            await fetch(self.api.bonita.url + 'loginservice', {
+            logininfo.push('host='+self.api.bonita.url);
+            await fetch('/Bonita/Login', {
                 method: 'POST',
                 cache: 'no-cache',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'Accept': '*/*',
-                    'Accept-Encoding': 'gzip, deflate, br'
+                    'Content-Type': 'application/json'
                 },
-                body: logininfo.join("&"),
+                body: JSON.stringify({
+                    credentials: self.api.bonita.credentials,
+                    host: self.api.bonita.url
+                }),
             }).then(async (response) => {
-                if (response.code == 204) {
-                    self.bonita.token = await response.cookies.get('X-Bonita-API-Token');
-                    console.log("Token "+self.bonita.token);
+                if (response.status == 200) {
+                    let res = await response.json();
+                    self.api.bonita.token = res.data.token;
+                    self.api.bonita.cookie = res.data.cookie;
+
+                    console.log("Token "+self.api.bonita.token);
+                    console.log("Cookie "+self.api.bonita.cookie);
                 } else {
                     throw Error("Error en el Login de Bonita1");
                 }
             }).catch(error => {
+                console.error(error);
                 throw Error("Error en el Login de Bonita2");
             });
         },
         async bonitaGetProcess() {
             let self = this;
-            await fetch(self.api.bonita.url + 'process?s=Customer', {
-                method: 'GET',
+            await fetch('/Bonita/GetProcess', {
+                method: 'POST',
                 cache: 'no-cache',
                 headers: {
-                    'Accept': 'application/json',
-                    'Authorization': 'Basic ' + self.api.erp.token,
+                    'Content-Type': 'application/json'
                 },
+                body: JSON.stringify({
+                    process: self.api.bonita.process,
+                    token: self.api.bonita.token,
+                    cookie: self.api.bonita.cookie,
+                    host: self.api.bonita.url
+                }),
             }).then(async (response) => {
-                if (response.code == 204) {
-                    self.bonita.token = await response.cookies.get('X-Bonita-API-Token');
+                if (response.status == 200) {
+                    let res = await response.json();
+                    self.api.bonita.idProcess = res.data.id;
+                    console.log("idProcess "+self.api.bonita.idProcess);
                 } else {
-                    throw Error("Error en el Login de Bonita");
+                    throw Error("Error en el getProcess de Bonita1");
                 }
             }).catch(error => {
-                throw Error("Error en el Login de Bonita");
+                console.error(error);
+                throw Error("Error en el getProcess de Bonita2");
             });
         },
         bonitaStartProcess() {
