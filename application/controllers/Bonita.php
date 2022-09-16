@@ -56,11 +56,15 @@ class Bonita extends CI_Controller {
         ];
     }
 
-    private function BonitaCurl($host, $action, $method, $token, $cookie, $data = []) {
+    private function BonitaCurl($host, $action, $method, $token, $cookie, $data = [], $contentType = null) {
         $headers = [ 
             'X-Bonita-API-Token: ' . $token,
             'Cookie: ' . $cookie,
         ];
+
+        if (!is_null($contentType)) {
+            $headers[] = 'Content-Type: '. $contentType;
+        }
 
         $ch = curl_init($host . $action);
         // Establecer URL y otras opciones apropiadas
@@ -69,7 +73,7 @@ class Bonita extends CI_Controller {
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
         if (count($data) != 0 && ($method == "POST" || $method == "PUT")) {
-            curl_setopt($ch, CURLOPT_POSTFIELDS,http_build_query($data));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
         }
         
         // Capturar la URL y pasarla al navegador
@@ -89,9 +93,7 @@ class Bonita extends CI_Controller {
         curl_close($ch);
 
         $data = [];
-        if (is_array($result)) {
-            $data = $result[0];
-        } else if ($result !== null) {
+        if ($result !== null) {
             $data = $result;
         }
 
@@ -117,7 +119,7 @@ class Bonita extends CI_Controller {
         } else {
             $this->output->set_status_header($res["status"])
             ->set_content_type('application/json', 'utf-8')
-            ->set_output(json_encode(['data' => $res["data"]], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+            ->set_output(json_encode(['data' => $res["data"][0]], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         }
     }
 
@@ -131,7 +133,7 @@ class Bonita extends CI_Controller {
         if (!$res["success"]) {
             $this->output->set_status_header($res["status"])
             ->set_content_type('application/json', 'utf-8')
-            ->set_output(json_encode(['message' => "Error en GetProcess"], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+            ->set_output(json_encode(['message' => "Error en StartProcess"], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         } else {
             $this->output->set_status_header($res["status"])
             ->set_content_type('application/json', 'utf-8')
@@ -139,7 +141,91 @@ class Bonita extends CI_Controller {
         }
     }
 
-    public function HumanTask() {
+    public function HumanTask($deployedBy) {
+        $host = $this->request->host;
+        $token = $this->request->token;
+        $cookie = $this->request->cookie;
+
+        $params = [
+            "c" => '50',
+            "d" => 'rootContainerId',
+            "f" => 'user_id%3D' . $deployedBy,
+            "o" => 'displayName ASC',
+            "p" => '0',
+        ];
         
+
+        $res = $this->BonitaCurl($host, 'portal/resource/app/userAppBonita/task-list/API/bpm/humanTask?c=50&d=rootContainerId&f=state%253Dready&f=user_id%253D22&o=displayName+ASC&p=0', 'GET', $token, $cookie);
+        
+        if (!$res["success"]) {
+            $this->output->set_status_header($res["status"])
+            ->set_content_type('application/json', 'utf-8')
+            ->set_output(json_encode(['message' => "Error en HumanTask"], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        } else {
+            $this->output->set_status_header($res["status"])
+            ->set_content_type('application/json', 'utf-8')
+            ->set_output(json_encode(['data' => end($res["data"])], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        }
+    }
+
+    public function AssignActor() {
+        $host = $this->request->host;
+        $token = $this->request->token;
+        $cookie = $this->request->cookie;
+        $humanTaskId = $this->request->humanTaskId;
+        $deployedBy = $this->request->deployedBy;
+
+        $data = [
+            "assigned_id" => $deployedBy,
+        ];
+
+        $res = $this->BonitaCurl($host, 'portal/resource/app/userAppBonita/task-list/API/bpm/humanTask/' . $humanTaskId, 'PUT', $token, $cookie, $data);
+
+        if (!$res["success"]) {
+            $this->output->set_status_header($res["status"])
+            ->set_content_type('application/json', 'utf-8')
+            ->set_output(json_encode(['message' => "Error en AssignActor"], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        } else {
+            $this->output->set_status_header($res["status"])
+            ->set_content_type('application/json', 'utf-8')
+            ->set_output(json_encode(['data' => $res], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        }
+    }
+
+    public function ExecuteProcess() {
+        $host = $this->request->host;
+        $token = $this->request->token;
+        $cookie = $this->request->cookie;
+        $requestData = $this->request->request;
+        $humanTaskId = $this->request->humanTaskId;
+
+        $contentType = 'application/json';
+        $data = [
+            "solicitudDevolucionInput" => [
+                "invoceNumber" => $requestData->id_factura,
+                "typeDocument" => $requestData->tipo_documento,
+                "numberDocument" => $requestData->num_documento,
+                "catOldProduct" => "Ropa interior",
+                "oldProduct" => $requestData->id_producto_ant,
+                "catNewProduc" => "Ropa",
+                "newProduct" => $requestData->id_producto_nuevo,
+                "email" => $requestData->email,
+                "observation" => $requestData->observaciones,
+                "ciudadDestino" => "Bogota",
+                "fechaSolicitud" => date("Y-m-d"),
+            ],
+        ];
+
+        $res = $this->BonitaCurl($host, 'portal/resource/taskInstance/Customer/1.0/CreateRequest/API/bpm/userTask/' . $humanTaskId . '/execution', 'POST', $token, $cookie, $data, $contentType);
+
+        if (!$res["success"]) {
+            $this->output->set_status_header($res["status"])
+            ->set_content_type('application/json', 'utf-8')
+            ->set_output(json_encode(['message' => "Error en AssignActor"], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        } else {
+            $this->output->set_status_header($res["status"])
+            ->set_content_type('application/json', 'utf-8')
+            ->set_output(json_encode(['data' => $res], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        }
     }
 }

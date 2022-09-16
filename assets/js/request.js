@@ -3,7 +3,7 @@ var request_form = new Vue({
     data: {
         api: {
             bonita: {
-                url: "http://localhost:8080/bonita/",
+                url: "http://3.94.97.60:8080/bonita/",
                 credentials: {
                     username: 'graphic.interface',
                     password: 'bpm'
@@ -12,8 +12,10 @@ var request_form = new Vue({
                 token: null,
                 cookie: null,
                 idProcess: null,
+                deployedBy: null,
                 idCase: null,
-                humanTast: null,
+                humanTaskId: null,
+                assignedActor: false,
             },
             crm: {
                 url: "https://b24-gg0vby.bitrix24.es/rest/1/zvixuqixiuq7kbhl/",
@@ -91,7 +93,7 @@ var request_form = new Vue({
                 await this.bonitaGetProcess();
                 await this.bonitaStartProcess();
                 await this.bonitaHumanTask();
-                await this.bonitaAssignedActor();
+                await this.bonitaAssignActor();
                 await this.bonitaExecuteProcess();
                 toastr.success("Solicitud registrada correctamente");
             } catch (error) {
@@ -149,6 +151,8 @@ var request_form = new Vue({
                     let res = await response.json();
                     self.api.bonita.idProcess = res.data.id;
                     console.log("idProcess "+self.api.bonita.idProcess);
+                    self.api.bonita.deployedBy = res.data.deployedBy;
+                    console.log("deployedBy "+self.api.bonita.deployedBy);
                 } else {
                     throw Error("Respuesta incorrecta en getProcess de Bonita");
                 }
@@ -184,13 +188,86 @@ var request_form = new Vue({
             });
         },
         async bonitaHumanTask() {
-
+            let self = this;
+            await fetch('/Bonita/HumanTask/'+self.api.bonita.deployedBy, {
+                method: 'POST',
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    token: self.api.bonita.token,
+                    cookie: self.api.bonita.cookie,
+                    host: self.api.bonita.url
+                }),
+            }).then(async (response) => {
+                if (response.status == 200) {
+                    let res = await response.json();
+                    self.api.bonita.humanTaskId = res.data.id;
+                    console.log("humanTaskId "+self.api.bonita.humanTaskId);
+                } else {
+                    throw Error("Respuesta incorrecta en humanTask de Bonita");
+                }
+            }).catch(error => {
+                console.error(error);
+                throw Error("Error en el humanTask de Bonita");
+            });
         },
-        async bonitaAssignedActor() {
-
+        async bonitaAssignActor() {
+            let self = this;
+            await fetch('/Bonita/AssignActor', {
+                method: 'POST',
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    token: self.api.bonita.token,
+                    cookie: self.api.bonita.cookie,
+                    host: self.api.bonita.url,
+                    deployedBy: self.api.bonita.deployedBy,
+                    humanTaskId: self.api.bonita.humanTaskId,
+                }),
+            }).then(async (response) => {
+                if (response.status == 200) {
+                    let res = await response.json();
+                    self.api.bonita.assignedActor = res.data.success;
+                    console.log("assignedActor "+self.api.bonita.assignedActor);
+                } else {
+                    throw Error("Respuesta incorrecta en assignedActor de Bonita");
+                }
+            }).catch(error => {
+                console.error(error);
+                throw Error("Error en el assignedActor de Bonita");
+            });
         },
         async bonitaExecuteProcess() {
-
+            let self = this;
+            await fetch('/Bonita/ExecuteProcess', {
+                method: 'POST',
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    token: self.api.bonita.token,
+                    cookie: self.api.bonita.cookie,
+                    host: self.api.bonita.url,
+                    humanTaskId: self.api.bonita.humanTaskId,
+                    request: self.request,
+                }),
+            }).then(async (response) => {
+                if (response.status == 200) {
+                    let res = await response.json();
+                    self.api.bonita.executeProcess = res.data.success;
+                    console.log("executeProcess "+self.api.bonita.executeProcess);
+                } else {
+                    throw Error("Respuesta incorrecta en executeProcess de Bonita");
+                }
+            }).catch(error => {
+                console.error(error);
+                throw Error("Error en el executeProcess de Bonita");
+            });
         }
     },
     watch: {
