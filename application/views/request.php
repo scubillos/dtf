@@ -43,7 +43,7 @@
                                             step="any" min="0" class="form-control" v-model="request.id_factura" @change="getFactura" 
                                             :style="(errors.factura) ? 'border-color: red;' : ''"
                                             required >
-                                        <span class="col-12" style="font-size:12px;" v-if="errors.factura">El número de factura no es válido</span>
+                                        <span class="col-12" style="font-size:12px;color:red;" v-if="errors.factura">El número de factura no es válido</span>
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -79,12 +79,13 @@
                                 <div class="form-group row">
                                     <label class="col-md-4">Observaciones</label>
                                     <div class="input-group col-md-8">
-                                        <textarea class="form-control" v-model="request.observaciones" required ></textarea>
+                                        <textarea class="form-control" v-model="request.observaciones" ></textarea>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <div class="col">
                                         <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Guardar</button>
+                                        <button type="button" class="btn btn-success" v-if="env=='dev'" @click="logrequest"><i class="fas fa-save"></i> Log</button>
                                     </div>
                                 </div>
                             </form>

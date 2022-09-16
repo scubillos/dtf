@@ -1,6 +1,7 @@
 var request_form = new Vue({
     el: '#request_form',
     data: {
+        env: 'prod',
         api: {
             bonita: {
                 url: "http://3.94.97.60:8080/bonita/",
@@ -16,6 +17,7 @@ var request_form = new Vue({
                 idCase: null,
                 humanTaskId: null,
                 assignedActor: false,
+                executeProcess: false,
             },
             crm: {
                 url: "https://b24-gg0vby.bitrix24.es/rest/1/zvixuqixiuq7kbhl/",
@@ -42,6 +44,7 @@ var request_form = new Vue({
             { id: "CE", text: "Cédula de extrangería (CE)" },
             { id: "TI", text: "Tarjeta de identidad (TI)" },
         ],
+        dataProductos: [],
         productos: [],
         productosNuevo: [],
         factura: null,
@@ -64,6 +67,7 @@ var request_form = new Vue({
                 },
             }).then(async (response) => {
                 let productos = await response.json();
+                self.dataProductos = productos;
                 for (let i = 0; i < productos.length; i++ ) {
                     const producto = productos[i];
                     self.productos.push({ id: producto.id, text: producto.name });
@@ -127,13 +131,21 @@ var request_form = new Vue({
             if (this.factura === null) {
                 throw Error("Factura no válida");
             }
-            if (this.request.id_producto_ant === "") {
+            if (this.request.tipo_documento === "") {
+                throw Error("El Tipo de Documento es obligatorio");
+            }
+            if (this.request.num_documento === null) {
                 throw Error("El Producto Anterior es obligatorio");
             }
             if (this.request.id_producto_ant === "") {
+                throw Error("El Producto Anterior es obligatorio");
+            }
+            if (this.request.id_producto_nuevo === "") {
                 throw Error("El Producto Nuevo es obligatorio");
             }
-            
+            if (this.request.email === null) {
+                throw Error("El Email es obligatorio");
+            }
         },
         async bonitaCall() {
             let self = this;
@@ -316,17 +328,41 @@ var request_form = new Vue({
                 console.error(error);
                 throw Error("Error en el executeProcess de Bonita");
             });
+        },
+        buscarProducto(id_producto) {
+            let self = this;
+            let filtro = self.dataProductos.filter(producto => producto.id == id_producto);
+
+            if (Array.isArray(filtro) && filtro.length > 0) {
+                return filtro[0];
+            }
+        },
+        logrequest() {
+            console.log("Request",this.request);
         }
     },
     watch: {
         'request.id_producto_ant'(val) {
             let self = this;
             if (val !== undefined && val !== null && val !== "") {
+                let producto = self.buscarProducto(val);
+                self.request.categoria_producto_ant = producto.itemCategory.description;
+
                 self.productosNuevo = self.productos.filter(producto => {
-                return parseInt(producto.id) !== parseInt(val);
+                    return parseInt(producto.id) !== parseInt(val);
                 });
             } else {
                 self.productosNuevo = self.productos;
+                self.request.categoria_producto_ant = "";
+            }
+        },
+        'request.id_producto_nuevo'(val) {
+            let self = this;
+            if (val !== undefined && val !== null && val !== "") {
+                let producto = self.buscarProducto(val);
+                self.request.categoria_producto_nuevo = producto.itemCategory.description;
+            } else {
+                self.request.categoria_producto_nuevo = "";
             }
         },
     }

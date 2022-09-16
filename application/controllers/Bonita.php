@@ -205,9 +205,9 @@ class Bonita extends CI_Controller {
                 "invoceNumber" => $requestData->id_factura,
                 "typeDocument" => $requestData->tipo_documento,
                 "numberDocument" => $requestData->num_documento,
-                "catOldProduct" => "Ropa interior",
+                "catOldProduct" => $requestData->categoria_producto_ant,
                 "oldProduct" => $requestData->id_producto_ant,
-                "catNewProduc" => "Ropa",
+                "catNewProduc" => $requestData->categoria_producto_nuevo,
                 "newProduct" => $requestData->id_producto_nuevo,
                 "email" => $requestData->email,
                 "observation" => $requestData->observaciones,
@@ -218,14 +218,14 @@ class Bonita extends CI_Controller {
 
         $res = $this->BonitaCurl($host, 'portal/resource/taskInstance/Customer/1.0/CreateRequest/API/bpm/userTask/' . $humanTaskId . '/execution', 'POST', $token, $cookie, $data, $contentType);
 
-        if (!$res["success"]) {
-            $this->output->set_status_header($res["status"])
+        if ($res["status"] == 204) {
+            $this->output->set_status_header(200)
             ->set_content_type('application/json', 'utf-8')
-            ->set_output(json_encode(['message' => "Error en AssignActor"], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+            ->set_output(json_encode(['data' => $res], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         } else {
             $this->output->set_status_header($res["status"])
             ->set_content_type('application/json', 'utf-8')
-            ->set_output(json_encode(['data' => $res], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+            ->set_output(json_encode(['message' => "Error en executeProcess"], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         }
     }
 }
