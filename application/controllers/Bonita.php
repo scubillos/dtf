@@ -211,7 +211,7 @@ class Bonita extends CI_Controller {
                 "newProduct" => $requestData->id_producto_nuevo,
                 "email" => $requestData->email,
                 "observation" => $requestData->observaciones,
-                "ciudadDestino" => "Bogota",
+                "ciudadDestino" => $requestData->ciudad,
                 "fechaSolicitud" => date("Y-m-d"),
             ],
         ];

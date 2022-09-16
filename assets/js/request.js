@@ -30,9 +30,12 @@ var request_form = new Vue({
             tipo_documento: "",
             num_documento: null,
             id_producto_ant: "",
+            categoria_producto_ant: "",
             id_producto_nuevo: "",
+            categoria_producto_nuevo: "",
             email: null,
             observaciones: null,
+            ciudad: null,
         },
         documentos: [
             { id: "CC", text: "Cédula de ciudadanía (CC)" },
@@ -40,7 +43,11 @@ var request_form = new Vue({
             { id: "TI", text: "Tarjeta de identidad (TI)" },
         ],
         productos: [],
-        productosNuevo: []
+        productosNuevo: [],
+        factura: null,
+        errors: {
+            factura: false
+        }
     },
     created: function() {
         this.getProductos();
@@ -63,11 +70,37 @@ var request_form = new Vue({
                 }
             });
         },
+        getFactura() {
+            let self = this;
+            let id_factura = self.request.id_factura;
+            if (id_factura !== "" && id_factura !== null) {
+                fetch(self.api.erp.url + 'v1/invoices/' + id_factura, {
+                    method: 'GET',
+                    cache: 'no-cache',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Authorization': 'Basic ' + self.api.erp.token,
+                    },
+                }).then(async (response) => {
+                    self.errors.factura = false;
+                    self.factura = await response.json();
+                    self.request.id_producto_ant = self.factura.items[0].id;
+                    self.request.ciudad = self.factura.client.address.city;
+                }).catch(error => {
+                    self.factura = null;
+                    self.errors.factura = true;
+                });
+            }
+        },
         async registerRequest() {
-            if (await this.validateEmail()) {
-                await this.bonitaCall();
-            } else {
-                toastr.error("La dirección de correo no corresponde a ningún cliente de DTF");
+            let self = this;
+            try {
+                await self.validateEmail();
+                await self.validateValues();
+                await self.bonitaCall();
+                toastr.success("Solicitud registrada correctamente");
+            } catch (error) {
+                toastr.error(error);
             }
         },
         async validateEmail() {
@@ -80,11 +113,27 @@ var request_form = new Vue({
             }).then(async (response) => {
                 let res = await response.json();
                 if (res.total != 0 && res.result.length != 0) {
+                    // TODO: Validar que la direccion email buscada y encontrada sean las mismas
                     valid = true;
                 }
             });
-
-            return valid;
+            
+            if (!valid) {
+                throw Error("La dirección de correo no corresponde a ningún cliente de DTF");
+            }
+        },
+        async validateValues() {
+            // Validar id de factura
+            if (this.factura === null) {
+                throw Error("Factura no válida");
+            }
+            if (this.request.id_producto_ant === "") {
+                throw Error("El Producto Anterior es obligatorio");
+            }
+            if (this.request.id_producto_ant === "") {
+                throw Error("El Producto Nuevo es obligatorio");
+            }
+            
         },
         async bonitaCall() {
             let self = this;
@@ -95,7 +144,6 @@ var request_form = new Vue({
                 await this.bonitaHumanTask();
                 await this.bonitaAssignActor();
                 await this.bonitaExecuteProcess();
-                toastr.success("Solicitud registrada correctamente");
             } catch (error) {
                 toastr.error(error);
             }
@@ -271,16 +319,16 @@ var request_form = new Vue({
         }
     },
     watch: {
-      'request.id_producto_ant'(val) {
-        let self = this;
-        if (val !== undefined && val !== null && val !== "") {
-          self.productosNuevo = self.productos.filter(producto => {
-            return parseInt(producto.id) !== parseInt(val);
-          });
-        } else {
-          self.productosNuevo = self.productos;
-        }
-      }
+        'request.id_producto_ant'(val) {
+            let self = this;
+            if (val !== undefined && val !== null && val !== "") {
+                self.productosNuevo = self.productos.filter(producto => {
+                return parseInt(producto.id) !== parseInt(val);
+                });
+            } else {
+                self.productosNuevo = self.productos;
+            }
+        },
     }
  });
 

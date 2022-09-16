@@ -11,7 +11,10 @@
     </head>
     <body>
         <nav class="navbar navbar-expand-lg navbar-dark bg-secondary" style="background-color:#23345a !important;">
-            <a class="navbar-brand" href="#">Crear solicitud</a>
+            <a class="navbar-brand" href="#">
+                <img src="<?php echo base_url('assets/images/logo.png'); ?>" style="height: 50px;" />
+                Crear solicitud
+            </a>
             <div class="mx-auto"></div>
             <div class="nav navbar-nav navbar-right">
                 <a href="<?php echo base_url('User/logout') ?>" class="btn btn-outline-danger bg-light"> <i class="fas fa-sign-out-alt"></i> Cerrar Sesion</a>
@@ -35,7 +38,12 @@
                                 <div class="form-group row">
                                     <label class="col-md-4"># Factura</label>
                                     <div class="input-group col-md-8">
-                                        <input type="number" step="any" min="0" class="form-control" v-model="request.id_factura" required >
+                                        <input 
+                                            type="number" 
+                                            step="any" min="0" class="form-control" v-model="request.id_factura" @change="getFactura" 
+                                            :style="(errors.factura) ? 'border-color: red;' : ''"
+                                            required >
+                                        <span class="col-12" style="font-size:12px;" v-if="errors.factura">El número de factura no es válido</span>
                                     </div>
                                 </div>
                                 <div class="form-group row">
