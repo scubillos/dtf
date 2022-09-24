@@ -33,8 +33,10 @@ var request_form = new Vue({
             num_documento: null,
             id_producto_ant: "",
             categoria_producto_ant: "",
+            valor_producto_ant: "",
             id_producto_nuevo: "",
             categoria_producto_nuevo: "",
+            valor_producto_nuevo: "",
             email: null,
             motivo: "",
             observaciones: null,
@@ -97,6 +99,7 @@ var request_form = new Vue({
                     self.errors.factura = false;
                     self.factura = await response.json();
                     self.request.id_producto_ant = self.factura.items[0].id;
+                    self.request.valor_producto_ant = parseFloat(self.factura.items[0].price);
                     self.request.ciudad = self.factura.client.address.city;
                 }).catch(error => {
                     self.factura = null;
@@ -369,6 +372,7 @@ var request_form = new Vue({
             if (val !== undefined && val !== null && val !== "") {
                 let producto = self.buscarProducto(val);
                 self.request.categoria_producto_nuevo = producto.itemCategory.description;
+                self.request.valor_producto_nuevo = parseFloat(producto.price[0].price);
             } else {
                 self.request.categoria_producto_nuevo = "";
             }
@@ -377,23 +381,27 @@ var request_form = new Vue({
  });
 
 Vue.component('select2', {
-    props: ['options', 'value', 'placeholder'],
+    props: ['options', 'value', 'placeholder', 'readonly'],
     template: '#select2-template',
     mounted: function () {
-      var vm = this
-      $(this.$el)
+        var vm = this
+        $(this.$el)
         // init select2
         .select2({ 
-          allowClear: true,
-          data: this.options,
-          placeholder: this.placeholder ?? "Seleccione"
+            allowClear: true,
+            data: this.options,
+            placeholder: this.placeholder ?? "Seleccione",
         })
         .val(this.value)
         .trigger('change')
         // emit event on change.
         .on('change', function () {
-          vm.$emit('input', this.value)
+            vm.$emit('input', this.value)
         })
+        if (this.readonly) {
+            console.log("with readonly");
+            $(this.$el).prop("disabled", true);
+        }
     },
     watch: {
       value: function (value) {

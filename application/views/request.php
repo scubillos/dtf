@@ -61,7 +61,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-4">Producto Anterior</label>
                                     <div class="input-group col-md-8">
-                                        <select2 :options="productos" class="form-control" v-model="request.id_producto_ant" />
+                                        <select2 :options="productos" class="form-control" v-model="request.id_producto_ant" :readonly="true" />
                                     </div>
                                 </div>
                                 <div class="form-group row">
