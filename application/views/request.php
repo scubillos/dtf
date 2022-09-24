@@ -77,6 +77,12 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
+                                    <label class="col-md-4">Motivo</label>
+                                    <div class="input-group col-md-8">
+                                        <select2 :options="motivos" class="form-control" v-model="request.motivo" id="motivo" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
                                     <label class="col-md-4">Observaciones</label>
                                     <div class="input-group col-md-8">
                                         <textarea class="form-control" v-model="request.observaciones" ></textarea>
