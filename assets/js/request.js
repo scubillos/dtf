@@ -20,11 +20,11 @@ var request_form = new Vue({
                 executeProcess: false,
             },
             crm: {
-                url: "https://b24-gg0vby.bitrix24.es/rest/1/zvixuqixiuq7kbhl/",
+                url: "https://b24-93ms6r.bitrix24.co/rest/1/55rujkbk0u1c3lee/",
             },
             erp: {
                 url: "https://api.alegra.com/api/",
-                token: "Y2Eucmlvc0BqYXZlcmlhbmEuZWR1LmNvOjY2NWM5NmY3OWZjNTZkZjhlZmQw",
+                token: "Y2Jhc3FibGw5NUBnbWFpbC5jb206MTViM2Y4OTI4OWQxZTUzMWRjNmQ=",
             }
         },
         request: {
