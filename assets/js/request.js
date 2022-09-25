@@ -199,7 +199,6 @@ var request_form = new Vue({
                     throw Error("Respuesta incorrecta en el Login de Bonita");
                 }
             }).catch(error => {
-                console.error(error);
                 throw Error("Error en el Login de Bonita");
             });
         },

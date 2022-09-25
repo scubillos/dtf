@@ -19,10 +19,16 @@ class Bonita extends CI_Controller {
         $status = 200;
         $credentials = $this->request->credentials;
 
-        $data = $this->LoginCurl($credentials->username, $credentials->password, $this->request->host);
-        $this->output->set_status_header($status)
+        $res = $this->LoginCurl($credentials->username, $credentials->password, $this->request->host);
+        if ($res["success"]) {
+            $this->output->set_status_header($status)
             ->set_content_type('application/json', 'utf-8')
-            ->set_output(json_encode(['data' => $data], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+            ->set_output(json_encode(['data' => $res], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        } else {
+            $this->output->set_status_header(401)
+            ->set_content_type('application/json', 'utf-8')
+            ->set_output(json_encode(['message' => "Error al ingresar en Bonita"], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        }
     }
 
     private function LoginCurl($username, $password, $host) {
@@ -35,6 +41,18 @@ class Bonita extends CI_Controller {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HEADER, 1);
         $result = curl_exec($ch);
+        $info = curl_getinfo($ch);
+        $this->lastCurl = [
+            "result" => $result,
+            "info" => $info
+        ];
+        if (curl_errno($ch)) {
+            return [
+                "success" => false,
+                "message" => "Error en el curl de login de Bonita",
+                "status" => $info["http_code"],
+            ];
+        }
         // get cookie
         // multi-cookie variant contributed by @Combuster in comments
         preg_match_all('/^Set-Cookie:\s*([^;]*)/mi', $result, $matches);
@@ -50,10 +68,19 @@ class Bonita extends CI_Controller {
             $cookie .= "$key=$value;";
         }
 
-        return [
-            "token" => $cookies["X-Bonita-API-Token"],
-            "cookie" => $cookie,
-        ];
+        if (is_array($cookies) && isset($cookies["X-Bonita-API-Token"])) {
+            return [
+                "success" => true,
+                "token" => $cookies["X-Bonita-API-Token"],
+                "cookie" => $cookie,
+            ];
+        } else {
+            return [
+                "success" => false,
+                "message" => "Error en el login de Bonita",
+                "status" => 401,
+            ];
+        }
     }
 
     private function BonitaCurl($host, $action, $method, $token, $cookie, $data = [], $contentType = null) {
@@ -202,17 +229,20 @@ class Bonita extends CI_Controller {
         $contentType = 'application/json';
         $data = [
             "solicitudDevolucionInput" => [
-                "invoceNumber" => $requestData->id_factura,
-                "typeDocument" => $requestData->tipo_documento,
-                "numberDocument" => $requestData->num_documento,
-                "catOldProduct" => $requestData->categoria_producto_ant,
-                "oldProduct" => $requestData->id_producto_ant,
-                "catNewProduc" => $requestData->categoria_producto_nuevo,
-                "newProduct" => $requestData->id_producto_nuevo,
+                "id_factura" => $requestData->id_factura,
+                "tipo_documento" => $requestData->tipo_documento,
+                "num_documento" => $requestData->num_documento,
+                "categoria_producto_ant" => $requestData->categoria_producto_ant,
+                "id_producto_ant" => $requestData->id_producto_ant,
+                "valor_producto_ant" => $requestData->valor_producto_ant,
+                "categoria_producto_nuevo" => $requestData->categoria_producto_nuevo,
+                "id_producto_nuevo" => $requestData->id_producto_nuevo,
+                "valor_producto_nuevo" => $requestData->valor_producto_nuevo,
                 "email" => $requestData->email,
-                "observation" => $requestData->observaciones,
-                "ciudadDestino" => $requestData->ciudad,
-                "fechaSolicitud" => date("Y-m-d"),
+                "motivo" => $requestData->motivo,
+                "observaciones" => $requestData->observaciones,
+                "ciudad" => $requestData->ciudad,
+                "fecha_solicitud" => date("Y-m-d") . "T" . date("H:i:s") . ".000Z",
             ],
         ];
 
