@@ -177,7 +177,7 @@ var request_form = new Vue({
             logininfo.push('username='+self.api.bonita.credentials.username);
             logininfo.push('password='+self.api.bonita.credentials.password);
             logininfo.push('host='+self.api.bonita.url);
-            await fetch('/Bonita/Login', {
+            await fetch('/index.php/Bonita/Login', {
                 method: 'POST',
                 cache: 'no-cache',
                 headers: {
@@ -204,7 +204,7 @@ var request_form = new Vue({
         },
         async bonitaGetProcess() {
             let self = this;
-            await fetch('/Bonita/GetProcess', {
+            await fetch('/index.php/Bonita/GetProcess', {
                 method: 'POST',
                 cache: 'no-cache',
                 headers: {
@@ -233,7 +233,7 @@ var request_form = new Vue({
         },
         async bonitaStartProcess() {
             let self = this;
-            await fetch('/Bonita/StartProcess/'+self.api.bonita.idProcess, {
+            await fetch('/index.php/Bonita/StartProcess/'+self.api.bonita.idProcess, {
                 method: 'POST',
                 cache: 'no-cache',
                 headers: {
@@ -259,7 +259,7 @@ var request_form = new Vue({
         },
         async bonitaHumanTask() {
             let self = this;
-            await fetch('/Bonita/HumanTask/'+self.api.bonita.deployedBy, {
+            await fetch('/index.php/Bonita/HumanTask/'+self.api.bonita.deployedBy, {
                 method: 'POST',
                 cache: 'no-cache',
                 headers: {
@@ -285,7 +285,7 @@ var request_form = new Vue({
         },
         async bonitaAssignActor() {
             let self = this;
-            await fetch('/Bonita/AssignActor', {
+            await fetch('/index.php/Bonita/AssignActor', {
                 method: 'POST',
                 cache: 'no-cache',
                 headers: {
@@ -313,7 +313,7 @@ var request_form = new Vue({
         },
         async bonitaExecuteProcess() {
             let self = this;
-            await fetch('/Bonita/ExecuteProcess', {
+            await fetch('/index.php/Bonita/ExecuteProcess', {
                 method: 'POST',
                 cache: 'no-cache',
                 headers: {
