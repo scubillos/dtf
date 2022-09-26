@@ -18,15 +18,15 @@ class Welcome extends CI_Controller {
 	/**
 	 * Index Page for this controller.
 	 */
-	public function index()
+	public function indexFb()
 	{
 		$this->load->view('home');
 	}
 
 	/**
-	 * Index Page for this controller.
+	 * Request Page for this controller.
 	 */
-	public function request()
+	public function index()
 	{
 		$this->load->view('request',['nombre_completo' => 'Usuario']);
 	}
