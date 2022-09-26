@@ -31,7 +31,7 @@
         <script src="https://kit.fontawesome.com/0030ea6865.js"></script>
         <script src="//code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-        <script async defer crossorigin="anonymous" src="https://connect.facebook.net/es_LA/sdk.js#xfbml=1&version=v15.0&appId=392921829700489&autoLogAppEvents=1" nonce="WfQkSKL4"></script>
+        <script async defer crossorigin="anonymous" src="https://connect.facebook.net/es_LA/sdk.js#xfbml=1&version=v15.0&appId=392921829700489&autoLogAppEvents=1" nonce="2DJfNNdQ"></script>
         <script src="<?php echo base_url('assets/js/vue.min.js') ?>"></script>
         <script src="<?php echo base_url('assets/js/vue-resource.min.js') ?>"></script>
         <script src="<?php echo base_url('assets/js/index.js') ?>"></script>

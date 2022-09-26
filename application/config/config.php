@@ -24,6 +24,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 //$config['base_url'] = 'http://3.94.97.60/';
+var_dump($_SERVER);die;
+var_dump($_SERVER["HTTP_HOST"]);die;
 $config['base_url'] = "http://localhost:8000/";
 
 /*
