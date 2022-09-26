@@ -34,8 +34,8 @@
         <script src="https://kit.fontawesome.com/0030ea6865.js"></script>
         <script src="//code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-        <script src="<?php echo base_url('assets/js/vue.min.js') ?>"></script>
-        <script src="<?php echo base_url('assets/js/vue-resource.min.js') ?>"></script>
+        <!--<script src="<?php echo base_url('assets/js/vue.min.js') ?>"></script>
+        <script src="<?php echo base_url('assets/js/vue-resource.min.js') ?>"></script>-->
         <script src="<?php echo base_url('assets/js/index.js') ?>"></script>
     </body>
 </html>
