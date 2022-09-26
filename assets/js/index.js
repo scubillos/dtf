@@ -7,9 +7,10 @@ window.fbAsyncInit = function() {
   });
 
   FB.getLoginStatus(function(response) {
-    alert("getLogin");
     if (response.status === 'connected') {
       console.log("response", response);
+    } else {
+      console.log("responseElse", response);
     }
   });
     
