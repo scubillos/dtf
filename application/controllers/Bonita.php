@@ -243,7 +243,9 @@ class Bonita extends CI_Controller {
                 "observaciones" => $requestData->observaciones,
                 "ciudad" => $requestData->ciudad,
                 "fecha_solicitud" => date("Y-m-d") . "T" . date("H:i:s") . ".000Z",
-                "estadoAprobacion" => "enProceso"
+                "estadoAprobacion" => "enProceso",
+                "textoExample" => "",
+                "motivoX" => "x",
             ],
         ];
 
