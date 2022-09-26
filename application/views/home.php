@@ -22,7 +22,7 @@
                             </div>
                         </div>
                         <div class="col-md-12 mb-3">
-                            <a class="btn btn-block btn-social btn-facebook text-center text-light" id="fbLink">
+                            <a class="btn btn-block btn-social btn-facebook text-center text-light" id="fbLink" onclick="fbLogin" href="#">
                                 <i class="fab fa-facebook"></i> Ingrese con Facebook
                             </a>
                         </div>

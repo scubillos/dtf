@@ -13,10 +13,9 @@ window.fbAsyncInit = function() {
       console.log("responseElse", response);
     }
   });
-    
-  //FB.AppEvents.logPageView();
-};
+}
 
+  //load the Javascript SDK asynchronously
 (function(d, s, id){
     var js, fjs = d.getElementsByTagName(s)[0];
     if (d.getElementById(id)) {return;}
