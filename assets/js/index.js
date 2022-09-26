@@ -18,8 +18,7 @@ window.fbAsyncInit = function() {
   }(document, 'script', 'facebook-jssdk'));
 
 FB.getLoginStatus(function(response) {
-  //statusChangeCallback(response);
-  console.log("response", response);
+  statusChangeCallback(response);
 });
 
 function checkLoginState() {
@@ -28,3 +27,6 @@ function checkLoginState() {
   });
 }
 
+function statusChangeCallback(response) {
+  console.log("response", response);
+}
