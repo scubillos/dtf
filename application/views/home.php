@@ -15,7 +15,7 @@
         <div class="container" style="width:30%;min-height:auto !important;height: auto !important;" id="home">
             <div class="row">
                 <div class="col-md-12 col-sm-12 col-lg-12 mx-auto">
-                    <div class="myform form" v-show="login">
+                    <div class="myform form" v-show="login" id="fb-root">
                         <div class="logo mb-3">
                             <div class="col-md-12 text-center">
                                 <h4>Login</h4>
