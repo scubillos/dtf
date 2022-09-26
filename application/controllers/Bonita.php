@@ -246,8 +246,6 @@ class Bonita extends CI_Controller {
             ],
         ];
 
-        var_dump($data);die;
-
         $res = $this->BonitaCurl($host, 'portal/resource/taskInstance/Customer/1.0/CreateRequest/API/bpm/userTask/' . $humanTaskId . '/execution', 'POST', $token, $cookie, $data, $contentType);
 
         if ($res["status"] == 204) {
