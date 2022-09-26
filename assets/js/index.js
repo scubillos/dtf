@@ -37,7 +37,7 @@ function getFbUserData() {
   FB.api('/me', { locale: 'en_US', fields: 'id,first_name,last_name,email,link,gender,locale,picture' },
     function (response) {
       document.getElementById('fbLink').setAttribute("onclick", "fbLogout");
-      document.getElementById('fbLink').innerHTML = "Salid de Facebook";
+      document.getElementById('fbLink').innerHTML = "Salir de Facebook";
       document.getElementById('msgLoginFb').innerHTML = "<b>Hola "+ response.first_name +"</b>";
 
       saveUserData(response);
@@ -47,4 +47,12 @@ function getFbUserData() {
 
 function saveUserData(response) {
   localStorage.setItem("userFB", JSON.stringify(response));
+}
+
+function fbLogout() {
+  FB.logout(function() {
+    document.getElementById('fbLink').setAttribute("onclick", "fbLogin()");
+    document.getElementById('fbLink').innerHTML = "Continuar con facebook";
+    document.getElementById('msgLoginFb').innerHTML = "<b>Cerrar sesion exitoso</b>";
+  })
 }
