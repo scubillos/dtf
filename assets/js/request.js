@@ -353,10 +353,11 @@ var request_form = new Vue({
     },
     watch: {
         'request.id_producto_ant'(val) {
+            console.log("entraaa");
             let self = this;
             if (val !== undefined && val !== null && val !== "") {
                 let producto = self.buscarProducto(val);
-                self.request.categoria_producto_ant = producto.itemCategory.description;
+                self.request.categoria_producto_ant = producto.itemCategory.name;
 
                 self.productosNuevo = self.productos.filter(producto => {
                     return parseInt(producto.id) !== parseInt(val);
@@ -370,7 +371,7 @@ var request_form = new Vue({
             let self = this;
             if (val !== undefined && val !== null && val !== "") {
                 let producto = self.buscarProducto(val);
-                self.request.categoria_producto_nuevo = producto.itemCategory.description;
+                self.request.categoria_producto_nuevo = producto.itemCategory.name;
                 self.request.valor_producto_nuevo = parseFloat(producto.price[0].price);
             } else {
                 self.request.categoria_producto_nuevo = "";
