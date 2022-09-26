@@ -20,6 +20,14 @@ class Welcome extends CI_Controller {
 	 */
 	public function index()
 	{
+		$this->load->view('home');
+	}
+
+	/**
+	 * Index Page for this controller.
+	 */
+	public function request()
+	{
 		$this->load->view('request',['nombre_completo' => 'Usuario']);
 	}
 }

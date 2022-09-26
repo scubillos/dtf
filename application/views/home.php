@@ -22,9 +22,7 @@
                             </div>
                         </div>
                         <div class="col-md-12 mb-3">
-                            <a class="btn btn-block btn-social btn-facebook text-center text-light" href="<?php echo $facebookUrl; ?>">
-                                <i class="fab fa-facebook"></i> Ingrese con Facebook
-                            </a>
+                            <div class="fb-login-button" data-width="" data-size="medium" data-button-type="continue_with" data-layout="default" data-auto-logout-link="false" data-use-continue-as="false"></div>
                         </div>
                     </div>
                 </div>
@@ -33,8 +31,9 @@
         <script src="https://kit.fontawesome.com/0030ea6865.js"></script>
         <script src="//code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+        <script async defer crossorigin="anonymous" src="https://connect.facebook.net/es_LA/sdk.js#xfbml=1&version=v15.0&appId=663440264906657&autoLogAppEvents=1" nonce="WfQkSKL4"></script>
         <script src="<?php echo base_url('assets/js/vue.min.js') ?>"></script>
         <script src="<?php echo base_url('assets/js/vue-resource.min.js') ?>"></script>
-        <script src="<?php echo base_url('assets/js/request.js') ?>"></script>
+        <script src="<?php echo base_url('assets/js/index.js') ?>"></script>
     </body>
 </html>
