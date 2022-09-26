@@ -3,7 +3,7 @@ window.fbAsyncInit = function() {
     appId      : '392921829700489',
     cookie     : true,
     xfbml      : true,
-    version    : '1'
+    version    : 'v15.0'
   });
     
   FB.AppEvents.logPageView();
