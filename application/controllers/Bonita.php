@@ -253,6 +253,7 @@ class Bonita extends CI_Controller {
             ->set_content_type('application/json', 'utf-8')
             ->set_output(json_encode(['data' => $res], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
         } else {
+            var_dump($this->lastCurl);
             $this->output->set_status_header($res["status"])
             ->set_content_type('application/json', 'utf-8')
             ->set_output(json_encode(['message' => "Error en executeProcess"], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
