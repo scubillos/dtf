@@ -24,6 +24,7 @@
                         <div class="col-md-12 mb-3">
                             <div class="fb-login-button" data-width="" data-size="medium" data-button-type="continue_with" data-layout="default" data-auto-logout-link="false" data-use-continue-as="false"></div>
                         </div>
+                        <div id="msgLoginFb"></div>
                     </div>
                 </div>
             </div>
