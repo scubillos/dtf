@@ -17,7 +17,7 @@
             </a>
             <div class="mx-auto"></div>
             <div class="nav navbar-nav navbar-right">
-                <a href="<?php echo base_url('User/logout') ?>" class="btn btn-outline-danger bg-light"> <i class="fas fa-sign-out-alt"></i> Cerrar Sesion</a>
+                <!--<a href="<?php echo base_url('User/logout') ?>" class="btn btn-outline-danger bg-light"> <i class="fas fa-sign-out-alt"></i> Cerrar Sesion</a>-->
             </div>
         </nav>
         <div class="container" id="request_form">
