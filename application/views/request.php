@@ -83,6 +83,12 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
+                                    <label class="col-md-4">Ciudad de destino</label>
+                                    <div class="input-group col-md-8">
+                                        <select2 :options="ciudades" class="form-control" v-model="request.ciudad" id="ciudad" />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
                                     <label class="col-md-4">Observaciones</label>
                                     <div class="input-group col-md-8">
                                         <textarea class="form-control" v-model="request.observaciones" ></textarea>

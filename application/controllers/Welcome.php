@@ -28,6 +28,6 @@ class Welcome extends CI_Controller {
 	 */
 	public function index()
 	{
-		$this->load->view('request',['nombre_completo' => 'Usuario']);
+		$this->load->view('request',['nombre_completo' => 'Usuario DTF']);
 	}
 }

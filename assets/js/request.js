@@ -54,6 +54,16 @@ var request_form = new Vue({
             { id: "No me gusto", text: "No me gustó" },
             { id: "Llego con defecto", text: "Llegó con defecto" },
         ],
+        ciudades: [
+            { id: "Bogotá", text: "Bogotá" },
+            { id: "Medellín", text: "Medellín" },
+            { id: "Girardot", text: "Girardot" },
+            { id: "Cali", text: "Cali" },
+            { id: "Tunja", text: "Tunja" },
+            { id: "Chía", text: "Chía" },
+            { id: "Madrid", text: "Madrid" },
+            { id: "Mosquera", text: "Mosquera" },
+        ],
         dataProductos: [],
         productos: [],
         productosNuevo: [],
@@ -100,7 +110,6 @@ var request_form = new Vue({
                     self.factura = await response.json();
                     self.request.id_producto_ant = self.factura.items[0].id;
                     self.request.valor_producto_ant = parseFloat(self.factura.items[0].price);
-                    self.request.ciudad = self.factura.client.address.city;
                 }).catch(error => {
                     self.factura = null;
                     self.errors.factura = true;
